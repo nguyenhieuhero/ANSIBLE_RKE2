@@ -1,9 +1,9 @@
 ---
-# - name: Prepare all nodes
-#   hosts: servers
-#   become: true
-#   roles:
-#     - setup_system
+- name: Prepare all nodes
+  hosts: servers
+  become: true
+  roles:
+    - setup_system
 
 - name: Server installation
   hosts: servers
