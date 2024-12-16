@@ -1,0 +1,20 @@
+---
+- name: Disable and stop the firewall
+  ansible.builtin.service:
+    name: ufw
+    state: stopped
+    enabled: no
+
+- name: Update and install required packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - nfs-common
+    - open-iscsi
+
+
+- name: Remove unnecessary packages
+  ansible.builtin.apt:
+    autoremove: yes

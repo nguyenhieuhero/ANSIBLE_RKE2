@@ -1,0 +1,19 @@
+- name: Install RKE2 server
+  ansible.builtin.shell: |
+    curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=server sh -
+
+- name: Enable and start RKE2 server service
+  ansible.builtin.service:
+    name: rke2-server
+    enabled: true
+    state: started
+
+
+- name: Retrieve RKE2 server token
+  ansible.builtin.command:
+    cmd: cat /var/lib/rancher/rke2/server/node-token
+  register: rke2_server_token
+
+- name: Debug RKE2 server token (optional)
+  ansible.builtin.debug:
+    msg: "RKE2 Server Token: {{ rke2_server_token.stdout }}"

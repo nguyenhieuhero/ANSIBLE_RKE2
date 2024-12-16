@@ -1,0 +1,31 @@
+- name: Find kubectl binary
+  ansible.builtin.find:
+    paths: /var/lib/rancher/rke2/data/
+    patterns: "kubectl"
+    recurse: yes
+  register: slink
+
+
+- name: Ensure kubectl symlink exists
+  ansible.builtin.file:
+    src: "{{slink.files[0].path}}"
+    dest: /usr/local/bin/kubectl
+    state: link
+    mode: '755'
+
+- name: Add kubectl configuration to vagrant's .bashrc
+  ansible.builtin.lineinfile:
+    path: .bashrc
+    line: "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
+    state: present
+
+
+- name: Verify kubectl setup
+  ansible.builtin.command: kubectl get node -o wide
+  environment:
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+  register: kubectl_output
+
+- name: Display kubectl output
+  debug:
+    var: kubectl_output.stdout

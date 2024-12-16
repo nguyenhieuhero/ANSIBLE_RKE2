@@ -1,0 +1,13 @@
+---
+# - name: Prepare all nodes
+#   hosts: servers
+#   become: true
+#   roles:
+#     - setup_system
+
+- name: Server installation
+  hosts: servers
+  become: true
+  roles:
+    - rke2_server_install
+    - setup_kubectl

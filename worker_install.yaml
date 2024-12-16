@@ -1,0 +1,36 @@
+- name: Retrieve RKE2 token from server
+  hosts: servers
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Fetch RKE2 server node token
+      ansible.builtin.command:
+        cmd: "cat /var/lib/rancher/rke2/server/node-token"
+      register: rke2_server_token
+
+    - name: Set RKE2 token fact for workers
+      ansible.builtin.set_fact:
+        rke2_server_token: "{{ rke2_server_token.stdout }}"
+      delegate_to: localhost
+
+    # - name: Set RKE2 server IP fact
+    #   ansible.builtin.set_fact:
+    #     rke2_server_ip: "{{ ansible_host }}"
+    #   delegate_to: localhost
+
+- name: Prepare all nodes
+  hosts: workers
+  gather_facts: true
+  become: true
+  roles:
+    - setup_system
+
+- name: Worker installation
+  hosts: workers
+  gather_facts: true
+  become: true
+  vars:
+    rke2_server_ip: "{{ groups['servers'][0] }}"
+    rke2_server_token: "{{ hostvars[groups['servers'][0]].rke2_server_token }}"
+  roles:
+    - rke2_agent_install
