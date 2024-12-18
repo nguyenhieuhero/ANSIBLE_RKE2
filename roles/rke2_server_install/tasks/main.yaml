@@ -2,12 +2,25 @@
   ansible.builtin.shell: |
     curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=server sh -
 
+- name: Create config directory for RKE2 agent
+  ansible.builtin.file:
+    path: /etc/rancher/rke2/
+    state: directory
+
+- name: Create config.yaml file for RKE2 agent
+  ansible.builtin.copy:
+    dest: /etc/rancher/rke2/config.yaml
+    content: |
+      node-ip: {{ hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname) }}
+      node-external-ip: {{ hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname) }}
+
+
 - name: Enable and start RKE2 server service
   ansible.builtin.service:
     name: rke2-server
     enabled: true
     state: started
-
+  ignore_errors: true
 
 - name: Retrieve RKE2 server token
   ansible.builtin.command:

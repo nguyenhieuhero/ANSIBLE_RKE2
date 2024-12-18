@@ -13,10 +13,13 @@
     content: |
       server: https://{{ rke2_server_ip }}:9345
       token: {{ rke2_server_token }}
+      node-ip: {{ hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname) }}
+      node-external-ip: {{ hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname) }}
 
 - name: Enable and start RKE2 Agent service
   ansible.builtin.service:
     name: rke2-agent.service
     state: started
     enabled: yes
+  ignore_errors: true
 

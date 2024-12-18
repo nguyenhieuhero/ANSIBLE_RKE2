@@ -20,12 +20,12 @@
     state: present
 
 
-- name: Verify kubectl setup
-  ansible.builtin.command: kubectl get node -o wide
-  environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
-  register: kubectl_output
+# - name: Verify kubectl setup
+#   ansible.builtin.command: kubectl get node -o wide
+#   environment:
+#     KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+#   register: kubectl_output
 
-- name: Display kubectl output
-  debug:
-    var: kubectl_output.stdout
+# - name: Display kubectl output
+#   debug:
+#     var: kubectl_output.stdout
